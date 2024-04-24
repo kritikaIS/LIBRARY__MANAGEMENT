@@ -311,3 +311,376 @@ void Lib::fine(int d, int m, int y, int dd, int mm, int yy)
     if (n2 > 0)
         cout << "\n\t\tThe Total Fine is : " << n2;
 }
+
+//modify function
+void Lib::modify()
+{
+    char ch, st1[100];
+    int i = 0, b, cont = 0;
+    system("cls");
+    cout << "\n\t\t>>Please Choose one option :-\n";
+    cout << "\n\t\t1.Modification In Current Books\n\n\t\t2.Add New Book\n\n\t\t3.Delete A Book\n\n\t\t4.Go back\n";
+    cout << "\n\n\t\tEnter your choice : ";
+    cin >> i;
+    if (i == 1)
+    {
+        system("cls");
+        b = branch(2);
+        ifstream intf1("Booksdata.txt", ios::binary);//opening in binary
+        if (!intf1)
+        {
+            cout << "\n\t\tFile Not Found\n";
+            cout << "\n\t\tPress any key to continue.....";
+            getch();
+            system("cls");
+            librarian();
+        }
+        intf1.close();
+        system("cls");
+        cout << "\n\t\tPlease Choose One Option :-\n";
+        cout << "\n\t\t1.Search By Book Name\n\n\t\t2.Search By Book's ID\n";
+        cout << "\n\t\tEnter Your Choice : ";
+        cin >> i;
+        fflush(stdin);
+        if (i == 1)//search book by name
+        {
+            system("cls");
+            cout << "\n\t\tEnter Book Name : ";
+            cin.getline(st1, 100);
+            system("cls");
+            fstream intf("Booksdata.txt", ios::in | ios::out | ios::ate | ios::binary);
+            intf.seekg(0);
+            intf.read((char *)this, sizeof(*this));
+            while (!intf.eof())
+            {
+                for (i = 0; b == B && bookname[i] != '\0' && st1[i] != '\0' && (st1[i] == bookname[i] || st1[i] == bookname[i] + 32); i++)
+                    ;
+                if (bookname[i] == '\0' && st1[i] == '\0')
+                {
+                    cont++;
+                    getdata();
+                    intf.seekp(intf.tellp() - sizeof(*this));
+                    intf.write((char *)this, sizeof(*this));
+                    break;
+                }
+                intf.read((char *)this, sizeof(*this));
+            }
+            intf.close();
+        }
+        else if (i == 2)//to search by id
+        {
+            cout << "\n\t\tEnter Book's ID : ";
+            cin.getline(st1, 100);
+            system("cls");
+            fstream intf("Booksdata.txt", ios::in | ios::out | ios::ate | ios::binary);
+            intf.seekg(0);
+            intf.read((char *)this, sizeof(*this));
+            while (!intf.eof())
+            {
+                for (i = 0; b == B && sc[i] != '\0' && st1[i] != '\0' && st1[i] == sc[i]; i++)
+                    ;
+                if (sc[i] == '\0' && st1[i] == '\0')
+                {
+                    cont++;
+                    getdata();
+                    intf.seekp(intf.tellp() - sizeof(*this));
+                    intf.write((char *)this, sizeof(*this));
+                    break;
+                }
+                intf.read((char *)this, sizeof(*this));
+            }
+            intf.close();
+        }
+        else
+        {
+            cout << "\n\t\tIncorrect Input.....:(\n";
+            cout << "\n\t\tPress any key to continue.....";
+            getch();
+            system("cls");
+            modify();
+        }
+        if (cont == 0)
+        {
+            cout << "\n\t\tBook Not Found.\n";
+            cout << "\n\t\tPress any key to continue.....";
+            getch();
+            system("cls");
+            modify();
+        }
+        else
+            cout << "\n\t\tUpdate Successful.\n";
+    }
+    else if (i == 2)
+    {
+        system("cls");
+        B = branch(2);
+        system("cls");
+        getdata();
+        ofstream outf("Booksdata.txt", ios::app | ios::binary);
+        outf.write((char *)this, sizeof(*this));
+        outf.close();
+        cout << "\n\t\tBook added Successfully.\n";
+    }
+    else if (i == 3)//only librarian can add
+    {
+        system("cls");
+        b = branch(2);
+        ifstream intf1("Booksdata.txt", ios::binary);
+        if (!intf1)
+        {
+            cout << "\n\t\tFile Not Found\n";
+            cout << "\n\t\tPress any key to continue.....";
+            getch();
+            intf1.close();
+            system("cls");
+            librarian();
+        }
+        intf1.close();
+        system("cls");
+        cout << "\n\t\tPlease Choose One Option for deletion:-\n";
+        cout << "\n\t\t1.By Book Name\n\n\t\t2.By Book's ID\n";
+        cout << "\n\t\tEnter Your Choice : ";
+        cin >> i;
+        fflush(stdin);
+        if (i == 1)
+        {
+            system("cls");
+            cout << "\n\t\tEnter Book Name : ";
+            cin.getline(st1, 100);
+            ofstream outf("temp.txt", ios::app | ios::binary);
+            ifstream intf("Booksdata.txt", ios::binary);
+            intf.read((char *)this, sizeof(*this));
+            while (!intf.eof())
+            {
+                for (i = 0; b == B && bookname[i] != '\0' && st1[i] != '\0' && (st1[i] == bookname[i] || st1[i] == bookname[i] + 32); i++)
+                    ;
+                if (bookname[i] == '\0' && st1[i] == '\0')
+                {
+                    cont++;
+                    intf.read((char *)this, sizeof(*this));
+                }
+                else
+                {
+                    outf.write((char *)this, sizeof(*this));
+                    intf.read((char *)this, sizeof(*this));
+                }
+            }
+            intf.close();
+            outf.close();
+            remove("Booksdata.txt");//deleting orignal
+            rename("temp.txt", "Booksdata.txt");//changing duplicate to orignal
+        }
+        else if (i == 2)
+        {
+            cout << "\n\t\tEnter Book's ID : ";
+            cin.getline(st1, 100);
+            ofstream outf("temp.txt", ios::app | ios::binary);
+            ifstream intf("Booksdata.txt", ios::binary);
+            intf.read((char *)this, sizeof(*this));
+            while (!intf.eof())
+            {
+                for (i = 0; b == B && sc[i] != '\0' && st1[i] != '\0' && st1[i] == sc[i]; i++)
+                    ;
+                if (sc[i] == '\0' && st1[i] == '\0')
+                {
+                    cont++;
+                    intf.read((char *)this, sizeof(*this));
+                }
+                else
+                {
+                    outf.write((char *)this, sizeof(*this));
+                    intf.read((char *)this, sizeof(*this));
+                }
+            }
+            outf.close();
+            intf.close();//closing both files
+            remove("Booksdata.txt");
+            rename("temp.txt", "Booksdata.txt");
+        }
+        else
+        {
+            cout << "\n\t\tIncorrect Input.....:(\n";
+            cout << "\n\t\tPress any key to continue.....";
+            getch();
+            system("cls");
+            modify();
+        }
+        if (cont == 0)
+        {
+            cout << "\n\t\tBook Not Found.\n";
+            cout << "\n\t\tPress any key to continue.....";
+            getch();
+            system("cls");
+            modify();
+        }
+        else
+            cout << "\n\t\tDeletion Successful.\n";
+    }
+    else if (i == 4)//go back to main menu
+    {
+        system("cls");
+        librarian();
+    }
+    else
+    {
+        cout << "\n\t\tWrong Input.\n";
+        cout << "\n\t\tPress any key to continue.....";
+        getch();
+        system("cls");
+        modify();
+    }
+    cout << "\n\t\tPress any key to continue.....";
+    getch();
+    system("cls");
+    librarian();//going back to librarian page
+}//end of modify function
+
+//pass fuction
+void Lib::pass()
+{
+    int i = 0;
+    char ch, st[21], ch1[21] = {"learnprogramo"};//declare character arrays to store user input
+    cout << "\n\t\tEnter Password : ";
+    while (1)
+    {
+        ch = getch();
+        if (ch == 13)
+        {
+            st[i] = '\0';
+            break;
+        }
+        else if (ch == 8 && i > 0)
+        {
+            i--;
+            cout << "\b \b";
+        }
+        else
+        {
+            cout << "*";//password masking
+            st[i] = ch;
+            i++;
+        }
+    }
+    ifstream inf("password.txt");
+    inf >> ch1;
+    inf.close();
+    for (i = 0; st[i] == ch1[i] && st[i] != '\0' && ch1[i] != '\0'; i++)
+        ;
+    if (st[i] == '\0' && ch1[i] == '\0')
+    {
+        system("cls");
+        librarian();
+    }
+    else//incorrect password
+    {
+        cout << "\n\n\t\tWrong Password.\n\n\t\ttry again.....\n";
+        getch();
+        system("cls");
+        get();
+    }
+}//end of pass function
+
+//get function
+void Lib::get()
+{
+    int i;
+    cout << "\n\t*********** LIBRARY MANAGEMENT SYSTEM ***********\n"
+         << "\n\t\t\t    Learnprogramo <<LMS>> C++\n";
+    cout << "\n\t\t>>Please Choose Any Option To login \n";
+    cout << "\n\t\t1.Student\n\n\t\t2.Librarian\n\n\t\t3.Close Application\n";
+    cout << "\n\t\tEnter your choice : ";
+    cin >> i;
+    if (i == 1)
+    {
+        system("cls");//clear the screen
+        student();
+    }
+    else if (i == 2)//librarian login
+        pass();
+    else if (i == 3)//closes the application
+        exit(0);
+    else
+    {
+        cout << "\n\t\tPlease enter correct option :(";
+        getch();
+        system("CLS");
+        get();
+    }
+}
+//der function
+void Lib::der(char st[], int b, int x)
+{
+    int i, cont = 0;
+    fstream intf("Booksdata.txt", ios::in | ios::out | ios::ate | ios::binary);
+    intf.seekg(0);
+    intf.read((char *)this, sizeof(*this));
+    while (!intf.eof())
+    {
+        for (i = 0; b == B && sc[i] != '\0' && st[i] != '\0' && st[i] == sc[i]; i++)
+            ;            ; // Loop through characters of 'id' and 'st' until a mismatch is found or the end of the strings is reached
+        if (sc[i] == '\0' && st[i] == '\0')
+        {
+            cont++;
+            if (x == 1)
+            {
+                q--;
+            }
+            else
+            {
+                q++;
+            }
+            intf.seekp(intf.tellp() - sizeof(*this));
+            intf.write((char *)this, sizeof(*this));//write data from object back to the file
+            break;
+        }
+        intf.read((char *)this, sizeof(*this));
+    }
+    if (cont == 0)
+    {
+        cout << "\n\t\tBook not found.\n";
+        cout << "\n\n\t\tPress any key to continue.....";
+        getch();//wait for a key press
+        system("cls");
+        issue();
+    }
+    intf.close();
+}
+//librarian
+void Lib::librarian()
+{
+    int i;
+    cout << "\n\t************ WELCOME LIBRARIAN ************\n";
+    cout << "\n\t\t>>Please Choose One Option:\n";
+    cout << "\n\t\t1.View BookList\n\n\t\t2.Search for a Book\n\n\t\t3.Modify/Add Book\n\n\t\t4.Issue Book\n\n\t\t5.Go to main menu\n\n\t\t6.Change Password\n\n\t\t7.Close Application\n";
+    cout << "\n\t\tEnter your choice : ";
+    cin >> i;
+    switch (i)
+    {
+    case 1:
+        booklist(2);
+        break;
+    case 2:
+        see(2);
+        break;
+    case 3:
+        modify();
+        break;
+    case 4:
+        issue();
+        break;
+    case 5:
+        system("cls");
+        get();
+        break;
+    case 6:
+        password();
+        break;
+    case 7:
+        exit(0);
+    default:
+        cout << "\n\t\tPlease enter correct option :(";
+        getch();
+        system("cls");
+        librarian();
+    }
+}
