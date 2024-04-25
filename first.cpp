@@ -393,7 +393,7 @@ void Lib::modify()
         }
         else
         {
-            cout << "\n\t\tIncorrect Input.....:(\n";
+            cout << "\n\t\tIncorrect Input.....\n";
             cout << "\n\t\tPress any key to continue.....";
             getch();
             system("cls");
@@ -539,7 +539,7 @@ void Lib::modify()
 void Lib::pass()
 {
     int i = 0;
-    char ch, st[21], ch1[21] = {"learnprogramo"};//declare character arrays to store user input
+    char ch, st[21], ch1[21] = {"Lib#123"};//declare character arrays to store user input
     cout << "\n\t\tEnter Password : ";
     while (1)
     {
@@ -584,8 +584,7 @@ void Lib::pass()
 void Lib::get()
 {
     int i;
-    cout << "\n\t*********** LIBRARY MANAGEMENT SYSTEM ***********\n"
-         << "\n\t\t\t    Learnprogramo <<LMS>> C++\n";
+    cout << "\n\t*********** LIBRARY MANAGEMENT SYSTEM ***********\n";
     cout << "\n\t\t>>Please Choose Any Option To login \n";
     cout << "\n\t\t1.Student\n\n\t\t2.Librarian\n\n\t\t3.Close Application\n";
     cout << "\n\t\tEnter your choice : ";
@@ -601,7 +600,8 @@ void Lib::get()
         exit(0);
     else
     {
-        cout << "\n\t\tPlease enter correct option :(";
+        cout << "\n\t\tPlease enter correct option.";
+        cout << "\n\t\tPress any key to continue......";
         getch();
         system("CLS");
         get();
@@ -678,9 +678,265 @@ void Lib::librarian()
     case 7:
         exit(0);
     default:
-        cout << "\n\t\tPlease enter correct option :(";
+        cout << "\n\t\tPlease enter correct option.";
+        cout << "\n\t\tPress any key to continue......";
         getch();
         system("cls");
         librarian();
     }
+}
+
+void Lib::see(int x)
+{
+    int i,b,cont=0;
+    char ch[100];
+    system("cls");
+    b=branch(x);
+    ifstream intf("Booksdata.txt",ios::binary); // Opening a file stream to read binary data from "Booksdata.txt"
+    if (!intf) // Checking if the file stream failed to open
+    {
+        cout << "\n\t\tFile Not Found.\n"; // Displaying a message if the file is not found.
+        cout << "\n\t\t->Press any key to continue.....";
+        getch();
+        system("cls");
+        if (x==1)
+            student();
+        else
+            librarian();
+    }
+    system("cls");
+    cout << "\n\t\tPlease Choose one option :-\n";
+    cout << "\n\t\t1.Search By Name\n\n\t\t2.Search By Book's ID\n";
+    cout << "\n\t\tEnter Your Choice : ";
+    cin >> i;
+    fflush(stdin); // Flushing the input buffer
+    intf.read((char *)this,sizeof(*this)); // Reading data from the file into the current object
+    if (i == 1) //student
+    {
+        cout << "\n\t\tEnter Book's Name : ";
+        cin.getline(ch, 100);
+        system("cls");
+        while (!intf.eof()) // Looping until the end of file
+        {
+            for (i=0;b==B&&q!=0&&bookname[i]!='\0'&&ch[i]!='\0'&&(ch[i]==bookname[i]||ch[i]==bookname[i]+32);i++); // Loop for comparing book names
+            if (bookname[i]=='\0'&&ch[i]=='\0')
+            {
+                cout << "\n\t\tBook Found :-\n";
+                show(x);
+                cont++;
+                break;
+            }
+            intf.read((char *)this,sizeof(*this)); // Reading data from the file into the current object
+        }
+    }
+    else if (i==2) //librarian
+    {
+        cout << "\n\t\tEnter Book's ID : ";
+        cin.getline(ch, 100);
+        system("cls");
+        while(!intf.eof())
+        {
+            for (i=0;b==B&&q!=0&&sc[i]!='\0'&&ch[i]!='\0'&&ch[i]==sc[i];i++); // Loop for comparing book IDs
+            if (sc[i]=='\0' && ch[i]=='\0')
+            {
+                cout << "\n\t\tBook Found :-\n";
+                show(x);
+                cont++;
+                break;
+            }
+            intf.read((char *)this, sizeof(*this));
+        }
+    }
+    else
+    {
+        cont++;
+        cout << "\n\t\tPlease enter correct option.";
+        cout << "\n\t\tPress any key to continue......";
+        getch();
+        system("cls");
+        see(x);
+    }
+    intf.close(); // Closing the file stream
+    if (cont == 0)
+        cout << "\n\t\tThis Book is not available :( \n";
+    cout << "\n\t\tPress any key to continue.....";
+    getch();
+    system("cls");
+    if (x == 1)
+        student();
+    else
+        librarian();
+}
+
+void Lib::student()
+{
+    int i;
+    cout << "\n\t************ WELCOME STUDENT ************\n"; // Displays a menu for students.
+    cout << "\n\t\t>>Please Choose One Option:\n";
+    cout << "\n\t\t1.View BookList\n\n\t\t2.Search for a Book\n\n\t\t3.Go to main menu\n\n\t\t4.Close Application\n"; // Displays the options available for students to choose from.
+    cout << "\n\t\tEnter your choice : ";
+    cin >> i;
+    if (i==1)
+        booklist(1);
+    else if (i==2)
+        see(1);
+    else if (i==3)
+    {
+        system("cls");
+        get();
+    }
+    else if (i==4)
+        exit(0);
+    else
+    {
+        cout << "\n\t\tPlease enter correct option.";
+        cout << "\n\t\tPress any key to continue......";
+        getch();
+        system("cls");
+        student();
+    }
+}
+
+void Lib::password()
+{
+    int i = 0, j = 0;
+    char ch, st[21], ch1[21] = {"Lib#123"}; // Initialize character arrays for password input and default password
+    system("cls"); // Clear screen
+    cout << "\n\n\t\tEnter Old Password : ";
+    while(1)
+    {
+        ch=getch();
+        if (ch==13)
+        {
+            st[i]='\0';
+            break;
+        }
+        else if (ch==8 && i>0)
+        {
+            i--;
+            cout << "\b \b";
+        }
+        else
+        {
+            cout << "*"; // Print asterisk to screen for masking
+            st[i] = ch;
+            i++;
+        }
+    }
+    ifstream intf("password.txt");
+    intf >> ch1;
+    intf.close();
+    for (i=0; st[i]==ch1[i] && st[i]!='\0' && ch1[i]!='\0';i++); // Loop to compare entered password with stored password
+    if (st[i]=='\0' && ch1[i]=='\0')
+    {
+        system("cls");
+        cout << "\n\t*The Password Should be less than 20 characters & don't use spaces*\n\n";
+        cout << "\n\t\tEnter New Password : ";
+        fflush(stdin); // Flush input buffer
+        i=0;
+        while(1)
+        {
+            j++;
+            ch=getch();
+            if (ch==13)
+            {
+                for (i=0; st[i]!=' ' && st[i]!='\0';i++) // Loop to check for spaces in password
+                    ;
+                if (j>20 || st[i]==' ')
+                {
+                    cout << "\n\n\t\tYou did't follow the instruction \n\n\t\tPress any key for try again.....";
+                    getch();
+                    system("cls");
+                    password();
+                    librarian();
+                }
+                st[i]='\0';
+                break;
+            }
+            else if (ch==8 && i>0)  //If Backspace is pressed and there are characters in the password
+            {
+                i--;
+                cout << "\b \b";
+            }
+            else
+            {
+                cout << "*";
+                st[i] = ch;
+                i++;
+            }
+        }
+        ofstream outf("password.txt"); // Open file for writing password
+        outf << st; // Write new password to file
+        outf.close();
+        cout << "\n\n\t\tYour Password has been changed Successfully.";
+        cout << "\n\t\tPress any key to continue......";
+        getch();
+        system("cls");
+        librarian();
+    }
+    else  // If passwords don't match
+    {
+        cout << "\n\n\t\tPassword is incorrect.....\n";
+        cout << "\n\t\tEnter 1 for retry or 2 for menu";
+        cin >> i;
+        if (i==1)
+        {
+            system("cls");
+            password();
+        }
+        else
+        {
+            system("cls");
+            librarian();
+        }
+    }
+}
+
+int Lib::branch(int x)
+{
+    int i;
+    cout << "\n\t\t>>Please Choose one Branch :-\n"; // Display branch selection menu
+    cout << "\n\t\t1.Class 12th\n\n\t\t2.CS\n\n\t\t3.EC\n\n\t\t4.CIVIL\n\n\t\t5.MECHANICAL\n\n\t\t6.1ST YEAR\n\n\t\t7.Go to menu\n";
+    cout << "\n\t\tEnter your choice : ";
+    cin >> i;
+    switch (i) // Switch statement to handle different branch choices
+    {
+    case 1:
+        return 1;
+        break;
+    case 2:
+        return 2;
+        break;
+    case 3:
+        return 3;
+        break;
+    case 4:
+        return 4;
+        break;
+    case 5:
+        return 5;
+        break;
+    case 6:
+        return 6;
+        break;
+    case 7:
+        system("cls");
+        if (x == 1) // Check if user is a student
+            student();
+        else    // If user is not a student
+            librarian();
+    default: // If user enters an invalid option
+        cout << "\n\t\tPlease enter any key to continue.";
+        getch();
+        system("cls");
+        branch(x);
+    }
+}
+
+int main()
+{
+    Lib obj;
+    obj.get();
+    getch();
+    return 0;
 }
